@@ -50,6 +50,10 @@ mmcli -m 0 —set-allowed-modes='5g|none'
 ```
 An output should appear based on the used modem.
 
+## Output example
+
+![NR5G](img/output.jpg)
+
 ## To do
 
 Modify the parser and the publisher to include more data.

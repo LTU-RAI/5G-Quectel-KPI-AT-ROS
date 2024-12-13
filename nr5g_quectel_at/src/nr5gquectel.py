@@ -22,15 +22,11 @@ ser.open()
 def parse_nr5g():
     # Initialize variables
     nr5g_rssi = [None] * 4
-    nr5g_rsrq = [None] * 4
-    nr5g_rsrp = [None] * 4
-    nr5g_sinr = [None] * 4
-    nr5g_rsrp_m, nr5g_rsrq_m, nr5g_sinr_m, nr5g_band, nr5g_bw_dl, nr5g_bw_ul = [None] * 6
-    nr5g_mimo_dl, nr5g_mimo_ul, nr5g_tx_power = [None] * 3
+    nr5g_rsrp, nr5g_rsrq, nr5g_sinr, nr5g_band, nr5g_bw_dl = [None] * 5
     nr5g_cell_id, gNodeB_ID, nr5g_cell_id, sector_ID = [None] * 4
+    gNodeB_ID_Length = 28
     # Define a mapping for DL bandwidth
-    bandwidth_mapping = {0: "5 MHz", 1: "10 MHz", 2: "15 MHz", 3: "20 MHz", 4: "25 MHz", 5: "30 MHz", 6: "40 MHz", 7: "50 MHz", 8: "60 MHz", 9: "70 MHz", 10: "80 MHz", 11: "90 MHz", 12: "100 MHz", 13: "200 MHz", 14: "400 MHz"}
-
+    bandwidth_mapping = {0: "5", 1: "10", 2: "15", 3: "20", 4: "25", 5: "30", 6: "40", 7: "50", 8: "60", 9: "70", 10: "80", 11: "90", 12: "100", 13: "200", 14: "400"}
 
     # Send command to the device
     ser.write(b'at+qrssi?\r\n')
@@ -56,9 +52,9 @@ def parse_nr5g():
             sector_ID = nr5g_cell_id - (gNodeB_ID * (2 ** (36 - gNodeB_ID_Length)))
             nr5g_band = "Band "+str(parts[10])
             nr5g_bw_dl = bandwidth_mapping.get(int(parts[11]))
-            nr5g_rsrp_m = float(parts[12])
-            nr5g_rsrq_m = float(parts[13])
-            nr5g_sinr_m = float(parts[14])
+            nr5g_rsrp = float(parts[12])
+            nr5g_rsrq = float(parts[13])
+            nr5g_sinr = float(parts[14])
 
 
         if line.startswith('OK'):
@@ -68,9 +64,9 @@ def parse_nr5g():
          "timestamp": str(datetime.now()),
          "net_param": {
              "net_type": "5G",
-             "rsrp": nr5g_rsrp_m,
-             "rsrq": nr5g_rsrq_m,
-             "sinr": nr5g_sinr_m,
+             "rsrp": nr5g_rsrp,
+             "rsrq": nr5g_rsrq,
+             "sinr": nr5g_sinr,
              "band": nr5g_band,
              "bandwidth_dl": nr5g_bw_dl,
              "rssi_0": nr5g_rssi[0],
